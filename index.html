@@ -46,8 +46,8 @@
 </head>
 <body>
 <div class="container">
-  <h1>🇵🇭 Pinoy Poof</h1>
-  <p class="subtitle">Hulaan ang brand! Guess that funny logo!</p>
+  <h1>DataBytes Pinoy Poof</h1>
+  <p class="subtitle">Hulaan ang brand!</p>
   <div id="game"></div>
 </div>
 
@@ -64,7 +64,15 @@ const questions = [
   { display: "🏬🟢", tagline: '"Bakit parang nandito na ang buong Pilipinas?"', hint: "SM stands for... Sobrang Malaki", choices: ["Robinsons", "Ayala Malls", "SM", "Glorietta"], answer: 2 },
   { display: "🥤🔴🌟", tagline: '"Happy meal ng Pilipino"', hint: "Bucket of chicken, bucket of fun", choices: ["Popeyes", "KFC", "Chicken Joy", "Jollibee"], answer: 3 },
   { display: "🍕🎵", tagline: '"Pizza + pasta + nostalgia"', hint: "Birthday parties every Saturday", choices: ["Pizza Hut", "Domino's", "Greenwich", "Yellow Cab"], answer: 2 },
-  { display: "💰💳🦅", tagline: '"ATM na palaging walang pera mo"', hint: "Bank of the Philippine Islands, pero emoji edition", choices: ["Metrobank", "BPI", "Unionbank", "RCBC"], answer: 1 }
+  { display: "💰💳🦅", tagline: '"ATM na palaging walang pera mo"', hint: "Bank of the Philippine Islands, pero emoji edition", choices: ["Metrobank", "BPI", "Unionbank", "RCBC"], answer: 1 },
+  { display: "🦐🍜", tagline: '"Sarap daw ng sabaw!"', hint: "Instant noodles na pang-masa", choices: ["Lucky Me!", "Nissin", "Payless", "Maggi"], answer: 0 },
+  { display: "🚌🟡", tagline: '"Libreng sakay... minsan"', hint: "Modern jeepney na may aircon", choices: ["Grab", "UV Express", "Beep", "EDSA Carousel"], answer: 3 },
+  { display: "🐔🍚👴", tagline: '"Fried chicken ng puso ng Pilipino"', hint: "Lolo\'s favorite chicken restaurant since forever", choices: ["KFC", "Max\'s Restaurant", "Andok\'s", "Mang Inasal"], answer: 1 },
+  { display: "🏠🔑💸", tagline: '"Pangarap ng bawat OFW"', hint: "Pinaka-malaking mall developer sa Pinas", choices: ["Megaworld", "Ayala Land", "SMDC", "Rockwell"], answer: 2 },
+  { display: "📱🌐🇵🇭", tagline: '"Globe o Smart? Depende sa signal!"', hint: "Kabilang sa pinakamalakas na telco sa bansa", choices: ["DITO", "Globe", "Smart", "Sun Cellular"], answer: 1 },
+  { display: "🧴🌸", tagline: '"Para sa malambot na balat"', hint: "Iconic Filipino whitening lotion", choices: ["Vaseline", "Belo", "Eskinol", "Silka"], answer: 3 },
+  { display: "🍦🥢", tagline: '"Dirty ice cream na hindi marumi"', hint: "Sorbetes sa kariton sa kanto", choices: ["Selecta", "Magnolia", "Nestle", "Sorbetes ni Manong"], answer: 3 },
+  { display: "🛒🔵🌊", tagline: '"Diskwento king ng Pilipinas"', hint: "Pang-masa supermarket sa buong bansa", choices: ["Robinsons Supermarket", "Puregold", "Save More", "Waltermart"], answer: 1 }
 ];
 
 let current = 0, score = 0, answered = false;
@@ -108,7 +116,7 @@ function pick(i) {
   const fb = document.getElementById('fb');
   fb.textContent = correct
     ? ['Tama! 🎉 Grabe ka talaga!', 'Ayos! 🙌 Alam mo yan!', 'Sus! Alam na alam! ✅'][Math.floor(Math.random()*3)]
-    : `Mali! 😅 Ay, ${q.choices[q.answer]} pala yan!`;
+    : `Mali! Ay, ${q.choices[q.answer]} pala yan!`;
   fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
   document.getElementById('nxt').style.display = 'block';
   document.getElementById('sc').textContent = score;
