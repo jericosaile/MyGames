@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pinoy Poof — Funny Logo Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f4ef; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .container { background: #fff; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%; box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+  h1 { font-size: 22px; font-weight: 600; text-align: center; margin-bottom: 0.25rem; color: #111; }
+  .subtitle { text-align: center; font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+  .score-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .score-pill { background: #f5f4ef; border: 1px solid #e0dfd6; border-radius: 8px; padding: 5px 12px; font-size: 13px; color: #666; }
+  .score-pill span { font-weight: 600; color: #111; }
+  .progress-bar { height: 4px; background: #e0dfd6; border-radius: 2px; margin-bottom: 1.5rem; }
+  .progress-fill { height: 4px; background: #1D9E75; border-radius: 2px; transition: width 0.4s ease; }
+  .logo-card { background: #fafaf8; border: 1px solid #e8e7e0; border-radius: 14px; padding: 1.75rem; margin-bottom: 1.25rem; text-align: center; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .logo-display { font-size: 52px; margin-bottom: 0.6rem; line-height: 1.1; }
+  .logo-tagline { font-size: 13px; color: #888; font-style: italic; }
+  .question-label { font-size: 15px; font-weight: 500; color: #111; margin-bottom: 0.75rem; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .choice-btn { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; font-size: 14px; color: #222; cursor: pointer; transition: all 0.15s; text-align: left; font-family: inherit; }
+  .choice-btn:hover:not(:disabled) { background: #f5f4ef; border-color: #bbb; }
+  .choice-btn.correct { background: #E1F5EE; border-color: #1D9E75; color: #085041; font-weight: 600; }
+  .choice-btn.wrong { background: #FCEBEB; border-color: #E24B4A; color: #501313; }
+  .choice-btn:disabled { cursor: default; }
+  .feedback { text-align: center; font-size: 14px; min-height: 42px; padding: 10px 14px; border-radius: 8px; margin-bottom: 1rem; }
+  .feedback.correct { background: #E1F5EE; color: #085041; }
+  .feedback.wrong { background: #FCEBEB; color: #501313; }
+  .hint-text { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 0.75rem; }
+  .next-btn { width: 100%; padding: 11px; border: 1px solid #ddd; background: #fff; border-radius: 8px; font-size: 14px; cursor: pointer; color: #222; transition: all 0.15s; font-family: inherit; }
+  .next-btn:hover { background: #f5f4ef; }
+  .end-screen { text-align: center; padding: 1.5rem 0.5rem; }
+  .end-emoji { font-size: 52px; margin-bottom: 0.75rem; }
+  .end-msg { font-size: 18px; font-weight: 500; color: #111; margin-bottom: 1rem; }
+  .end-score { font-size: 52px; font-weight: 700; color: #111; margin: 0.25rem 0; }
+  .end-label { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+  .restart-btn { padding: 11px 32px; border: 1px solid #ddd; background: #fff; border-radius: 8px; font-size: 14px; cursor: pointer; color: #222; font-family: inherit; }
+  .restart-btn:hover { background: #f5f4ef; }
+  @media (max-width: 400px) {
+    .choices { grid-template-columns: 1fr; }
+    .logo-display { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🇵🇭 Pinoy Poof</h1>
+  <p class="subtitle">Hulaan ang brand! Guess that funny logo!</p>
+  <div id="game"></div>
+</div>
+
+<script>
+const questions = [
+  { display: "🐝👑", tagline: '"Langhap-sarap!"', hint: "The king of Filipino fast food", choices: ["Jollibee", "McDonald's", "KFC", "Chowking"], answer: 0 },
+  { display: "🍟🤡", tagline: '"I\'m lovin\' it... daw"', hint: "Golden arches in disguise", choices: ["Jollibee", "McDonald's", "Burger King", "Wendy's"], answer: 1 },
+  { display: "🌹💳", tagline: '"May forever? May utang."', hint: "Your lola's favorite savings bank", choices: ["BPI", "BDO", "Security Bank", "Metrobank"], answer: 3 },
+  { display: "🐸🫗", tagline: '"Ang sarap ng merienda!"', hint: "Green frog, milky drinks", choices: ["Zagu", "Mang Inasal", "Greenwich", "Quiapo Frog"], answer: 0 },
+  { display: "🏪💛", tagline: '"Tindahan ng lahat ng kailangan mo (at hindi mo kailangan)"', hint: "Yellow and everywhere in the Philippines", choices: ["Puregold", "SM Supermarket", "Ministop", "7-Eleven"], answer: 3 },
+  { display: "🍗🌽", tagline: '"Isang order ng inasal, please!"', hint: "Bacolod-style chicken on banana leaf", choices: ["KFC", "Andok's", "Mang Inasal", "Max's Restaurant"], answer: 2 },
+  { display: "📦🚚💨", tagline: '"Asan na yung package ko?!"', hint: "Shopee's favorite kuya", choices: ["LBC", "J&T Express", "Lalamove", "2GO"], answer: 1 },
+  { display: "☕🦁", tagline: '"Pampagising ng estudyante"', hint: "Coffee that made cram sessions possible", choices: ["Starbucks", "Coffee Bean", "Bo's Coffee", "Tim Hortons"], answer: 2 },
+  { display: "🏬🟢", tagline: '"Bakit parang nandito na ang buong Pilipinas?"', hint: "SM stands for... Sobrang Malaki", choices: ["Robinsons", "Ayala Malls", "SM", "Glorietta"], answer: 2 },
+  { display: "🥤🔴🌟", tagline: '"Happy meal ng Pilipino"', hint: "Bucket of chicken, bucket of fun", choices: ["Popeyes", "KFC", "Chicken Joy", "Jollibee"], answer: 3 },
+  { display: "🍕🎵", tagline: '"Pizza + pasta + nostalgia"', hint: "Birthday parties every Saturday", choices: ["Pizza Hut", "Domino's", "Greenwich", "Yellow Cab"], answer: 2 },
+  { display: "💰💳🦅", tagline: '"ATM na palaging walang pera mo"', hint: "Bank of the Philippine Islands, pero emoji edition", choices: ["Metrobank", "BPI", "Unionbank", "RCBC"], answer: 1 }
+];
+
+let current = 0, score = 0, answered = false;
+let shuffled = [...questions].sort(() => Math.random() - 0.5);
+
+function render() {
+  const el = document.getElementById('game');
+  if (current >= shuffled.length) { renderEnd(el); return; }
+  const q = shuffled[current];
+  const pct = (current / shuffled.length) * 100;
+  el.innerHTML = `
+    <div class="score-bar">
+      <div class="score-pill">Tanong <span>${current + 1}</span> / ${shuffled.length}</div>
+      <div class="score-pill">Score: <span id="sc">${score}</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="logo-card">
+      <div class="logo-display">${q.display}</div>
+      <div class="logo-tagline">${q.tagline}</div>
+    </div>
+    <p class="question-label">Anong brand ito? 🤔</p>
+    <div class="choices">
+      ${q.choices.map((c, i) => `<button class="choice-btn" onclick="pick(${i})" id="btn${i}">${c}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nxt" style="display:none" onclick="next()">${current + 1 < shuffled.length ? 'Susunod →' : 'Tingnan ang resulta 🎊'}</button>
+  `;
+}
+
+function pick(i) {
+  if (answered) return;
+  answered = true;
+  const q = shuffled[current];
+  const correct = q.answer === i;
+  if (correct) score++;
+  document.querySelectorAll('.choice-btn').forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === q.answer) b.classList.add('correct');
+    else if (idx === i) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb');
+  fb.textContent = correct
+    ? ['Tama! 🎉 Grabe ka talaga!', 'Ayos! 🙌 Alam mo yan!', 'Sus! Alam na alam! ✅'][Math.floor(Math.random()*3)]
+    : `Mali! 😅 Ay, ${q.choices[q.answer]} pala yan!`;
+  fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+  document.getElementById('nxt').style.display = 'block';
+  document.getElementById('sc').textContent = score;
+}
+
+function next() {
+  current++;
+  answered = false;
+  render();
+}
+
+function renderEnd(el) {
+  const pct = Math.round((score / shuffled.length) * 100);
+  let msg = '';
+  if (pct === 100) msg = '🏆 Perfect score! Tunay na Pinoy ka!';
+  else if (pct >= 80) msg = '🥳 Grabe! Halos lahat tama!';
+  else if (pct >= 60) msg = '😄 Hindi masama! Okay ka pa rin!';
+  else if (pct >= 40) msg = '😅 Ay nako, kailangan pa magsanay!';
+  else msg = '😂 Hoy, saan ka naman nanggaling?!';
+  el.innerHTML = `
+    <div class="end-screen">
+      <div class="end-emoji">🎊</div>
+      <p class="end-msg">${msg}</p>
+      <div class="end-score">${score} / ${shuffled.length}</div>
+      <p class="end-label">tamang sagot</p>
+      <button class="restart-btn" onclick="restart()">I-try ulit! 🔄</button>
+    </div>
+  `;
+}
+
+function restart() {
+  shuffled = [...questions].sort(() => Math.random() - 0.5);
+  current = 0; score = 0; answered = false;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
